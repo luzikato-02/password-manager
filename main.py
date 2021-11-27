@@ -54,9 +54,27 @@ def save():
             with open('data.json', 'w') as data_file:
                 json.dump(data, data_file, indent=4)
         finally:
-            # Whatever happens clear entry
+            # Whatever happened clear entry
             website_entry.delete(0, END)
             password_entry.delete(0, END)
+# ---------------------------- SEARCH WEBSITE ------------------------------- #
+def find_password():
+    website = website_entry.get()
+    try:
+        # Try opening 'data.json'
+        with open('data.json', 'r') as data_file:
+            # Reading old data
+            data = json.load(data_file)
+    except FileNotFoundError:
+        messagebox.showerror(title="Error", message="No data file found.")
+    else:
+        if website in data:
+            email_data = data[website]["email"]
+            password_data = data[website]["password"]
+            messagebox.showinfo(title="Data Found",message=f"These are the data for {website} website: \nEmail: {email_data}"
+                                                           f"\nPassword: {password_data}")
+        else:
+            messagebox.showerror(title="Error", message=f"Not details for {website} exists.")
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title('Password Manager')
@@ -76,8 +94,8 @@ password_label = Label(text='Password:')
 password_label.grid(column=0, row=3)
 
 # Entries
-website_entry = Entry(width=52)
-website_entry.grid(column=1, row=1, columnspan=2)
+website_entry = Entry(width=33)
+website_entry.grid(column=1, row=1)
 website_entry.focus()
 username_entry = Entry(width=52)
 username_entry.insert(0, 'anasnurf99@gmail.com')
@@ -91,5 +109,7 @@ generate_pw.grid(column=2, row=3)
 # add_pw = Button(text='Add', width=45, command=lambda: save(website_entry, username_entry, password_entry))
 add_pw = Button(text='Add', width=45, command=save)
 add_pw.grid(column=1, row=4, columnspan=2)
+search = Button(text='Search', width=15, command=find_password)
+search.grid(column=2, row=1)
 
 window.mainloop()
