@@ -2,11 +2,10 @@ from tkinter import *
 from tkinter import messagebox
 from random import choice, randint, shuffle
 import pyperclip
+import json
 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
-# Password Generator Project
-
 def generate_password():
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
                'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -25,53 +24,24 @@ def generate_password():
     password_entry.insert(0, password)
     pyperclip.copy(password)
 
-
 # ---------------------------- SAVE PASSWORD ------------------------------- #
-# def entry_is_ok(*entries):
-#     for entry in entries:
-#         if entry == None:
-#             return False
-
-# def save(website, username, password):
-#     '''Input parameters should be entry class.'''
-#     new_website = website.get()
-#     new_username = username.get()
-#     new_password = password.get()
-#     # is_ok = True
-#     # if not entry_is_ok(new_website, new_username, new_password):
-#     #     messagebox.showwarning(title='Oops', message="Please don't leave any fields empty!")
-#     #     is_ok = False
-#     # else:
-#     #     is_ok = messagebox.askokcancel(title=new_website, message=f"These are the details entered: \nEmail: {new_username} "
-#     #                                                       f"\n Password: {new_password} \nIs it ok to save?")
-#     if len(new_website) == 0 or len(new_password) == 0:
-#         messagebox.showwarning(title="Oops", message="Please make sure you haven't left any fields empty.")
-#     else:
-#         is_ok = messagebox.askokcancel(title=new_website, message=f"These are the details entered: \nEmail: {new_username} "
-#                                                                   f"\n Password: {new_password} \nIs it ok to save?")
-#         if is_ok:
-#             with open('data.txt', 'a') as f:
-#                 f.write(f"{new_website} | {new_username} | {new_password}\n")
-#                 website.delete(0, END)
-#                 password.delete(0, END)
-
 def save():
-    new_website = website_entry.get()
-    new_username = username_entry.get()
-    new_password = password_entry.get()
-    if len(new_website) == 0 or len(new_password) == 0:
+    website = website_entry.get()
+    email = username_entry.get()
+    password = password_entry.get()
+    new_data = {
+        website: {
+            "email": email,
+            "password": password,
+        }
+    }
+    if len(website) == 0 or len(password) == 0:
         messagebox.showwarning(title="Oops", message="Please make sure you haven't left any fields empty.")
     else:
-        is_ok = messagebox.askokcancel(title=new_website,
-                                       message=f"These are the details entered: \nEmail: {new_username} "
-                                               f"\n Password: {new_password} \nIs it ok to save?")
-        if is_ok:
-            with open('data.txt', 'a') as f:
-                f.write(f"{new_website} | {new_username} | {new_password}\n")
-                website_entry.delete(0, END)
-                password_entry.delete(0, END)
-
-
+        with open('data.json', 'w') as data_file:
+            json.dump(new_data, data_file)
+            website_entry.delete(0, END)
+            password_entry.delete(0, END)
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title('Password Manager')
